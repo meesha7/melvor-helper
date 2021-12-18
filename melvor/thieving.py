@@ -35,35 +35,27 @@ class ThievingTarget:
         return auto_eat.max_heal() / mean([0, self.max_hit])
 
     def max_idle_time_max(self, auto_eat):
-        return (
-            self.hits_before_empty_max(auto_eat)
-            * self.action_time
-            / (self.stun_chance / 100)
-        )
+        return self.hits_before_empty_max(auto_eat) * self.action_time / (self.stun_chance / 100)
 
     def max_idle_time_avg(self, auto_eat):
-        return (
-            self.hits_before_empty_avg(auto_eat)
-            * self.action_time
-            / (self.stun_chance / 100)
-        )
+        return self.hits_before_empty_avg(auto_eat) * self.action_time / (self.stun_chance / 100)
 
     def gp_stolen_idle(self, idle_hrs):
-        num_actions = util.num_actions(idle_hrs, self.action_time)
+        num_successes = util.num_actions(idle_hrs, self.action_time) * (self.chance / 100)
         total = 0
 
         for drop in self.drops:
             if isinstance(drop, GoldDrop):
-                total += drop.avg_gp() * num_actions
+                total += drop.avg_gp() * num_successes
 
         return total
 
     def item_drop_chances_idle(self, idle_hrs):
-        num_actions = util.num_actions(idle_hrs, self.action_time)
+        num_successes = util.num_actions(idle_hrs, self.action_time) * (self.chance / 100)
         table = []
 
         for drop in self.drops:
             if isinstance(drop, ItemDrop):
-                table.append([drop.name, util.gacha(drop.chance, num_actions)])
+                table.append([drop.name, util.gacha(drop.chance, num_successes)])
 
         return table
