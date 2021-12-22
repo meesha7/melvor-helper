@@ -1,1 +1,1 @@
-from . import cooking, drop, food, smithing, thieving, util
+from . import combat, cooking, drop, food, smithing, thieving, util
