@@ -21,7 +21,7 @@ class Crafting:
         double_mod = 1 + self.bonuses.chance_to_double / 100
         preserve_mod = 1 + self.bonuses.chance_to_preserve / 100
 
-        return (amount * preserve_mod / self.recipe) * self.output * double_mod
+        return (amount / self.recipe) * self.output * preserve_mod * double_mod
 
     def total_price(self, amount):
         return self.will_produce(amount) * self.price
