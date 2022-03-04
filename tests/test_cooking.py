@@ -1,57 +1,56 @@
-from unittest import TestCase
+import pytest
 
 from melvor.cooking import Cooking, CookingBonuses
 
 
-class TestCooking(TestCase):
-    def test_time_to_use_all_ingredients(self):
-        bonuses = CookingBonuses(
-            chance_to_preserve=0,
-            chance_to_double=0,
-            chance_to_perfect=0,
-            success_rate=100,
-        )
+def test_time_to_use_all_ingredients():
+    bonuses = CookingBonuses(
+        chance_to_preserve=0,
+        chance_to_double=0,
+        chance_to_perfect=0,
+        success_rate=100,
+    )
 
-        cooking = Cooking(base_heal=100, cook_time=10, output=1, bonuses=bonuses)
+    cooking = Cooking(base_heal=100, cook_time=10, recipe=1, output=1, bonuses=bonuses)
 
-        self.assertAlmostEqual(cooking.time_to_use_all_ingredients(10), 100)
+    assert pytest.approx(cooking.time_to_use_all_ingredients(10)) == 100
 
-        bonuses.chance_to_preserve = 10
-        self.assertAlmostEqual(cooking.time_to_use_all_ingredients(10), 110)
+    bonuses.chance_to_preserve = 10
+    assert pytest.approx(cooking.time_to_use_all_ingredients(10)) == 110
 
-    def test_will_produce(self):
-        bonuses = CookingBonuses(
-            chance_to_preserve=0,
-            chance_to_double=0,
-            chance_to_perfect=0,
-            success_rate=100,
-        )
 
-        cooking = Cooking(base_heal=100, cook_time=10, output=1, bonuses=bonuses)
+def test_will_produce():
+    bonuses = CookingBonuses(
+        chance_to_preserve=0,
+        chance_to_double=0,
+        chance_to_perfect=0,
+        success_rate=100,
+    )
 
-        self.assertAlmostEqual(cooking.will_produce_normal(10), 10)
+    cooking = Cooking(base_heal=100, cook_time=10, recipe=1, output=1, bonuses=bonuses)
 
-        bonuses.chance_to_perfect = 50
+    assert cooking.will_produce_normal(10) == 10
 
-        self.assertAlmostEqual(cooking.will_produce_normal(10), 5)
-        self.assertAlmostEqual(cooking.will_produce_perfect(10), 5)
+    bonuses.chance_to_perfect = 50
 
-    def test_total_heal(self):
-        bonuses = CookingBonuses(
-            chance_to_preserve=0,
-            chance_to_double=0,
-            chance_to_perfect=0,
-            success_rate=100,
-        )
+    assert pytest.approx(cooking.will_produce_normal(10)) == 5
+    assert pytest.approx(cooking.will_produce_perfect(10)) == 5
 
-        cooking = Cooking(base_heal=100, cook_time=10, output=1, bonuses=bonuses)
 
-        self.assertAlmostEqual(cooking.total_heal(10), 1000)
+def test_total_heal():
+    bonuses = CookingBonuses(
+        chance_to_preserve=0,
+        chance_to_double=0,
+        chance_to_perfect=0,
+        success_rate=100,
+    )
 
-        bonuses.chance_to_perfect = 50
+    cooking = Cooking(base_heal=100, cook_time=10, recipe=1, output=1, bonuses=bonuses)
 
-        self.assertAlmostEqual(cooking.total_heal(10), 1050)
+    assert pytest.approx(cooking.total_heal(10)) == 1000
 
-        bonuses.chance_to_double = 10
+    bonuses.chance_to_perfect = 50
+    assert pytest.approx(cooking.total_heal(10)) == 1050
 
-        self.assertAlmostEqual(cooking.total_heal(10), 1155)
+    bonuses.chance_to_double = 10
+    assert pytest.approx(cooking.total_heal(10)) == 1155
